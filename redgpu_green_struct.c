@@ -677,7 +677,7 @@ exit:;
   outStruct[0] = out;
 }
 
-REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount) {
+REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, RedStructMemberType elementType, unsigned elementArrayFirst, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount) {
   // NOTE(Constantine):
   // First, get the range we need based on elementIndex and privateRangesIndexNextRangeElementOffset offsets.
   unsigned rangeIndex = (unsigned)-1;
@@ -726,60 +726,15 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   }
 
   // NOTE(Constantine):
-  // Then, get the offset to the first element.
-  unsigned first = (unsigned)-1;
-  {
-    if (rangeIndex == 0) {
-      first = elementIndex;
-    } else {
-      const unsigned start = structure->privateRangesIndexNextRangeElementOffset[rangeIndex-1];
-      first = elementIndex - start;
-    }
-  }
-
-  // NOTE(Constantine):
-  // Lastly, get the type of the element.
-  RedStructMemberType type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
-  {
-    const unsigned start = rangeIndex == 0 ? 0 : structure->privateRangesIndexNextRangeElementOffset[rangeIndex-1];
-    const GreenStructElement element = structure->privateRanges[rangeIndex].elements[start];
-    if (element == GREEN_STRUCT_ELEMENT_ARRAY_RO_CONSTANT) {
-      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_RO) {
-      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_RW) {
-      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
-    } else if (element == GREEN_STRUCT_ELEMENT_SAMPLER) {
-      type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
-    } else if (element == GREEN_STRUCT_ELEMENT_TEXTURE_RO) {
-      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
-    } else if (element == GREEN_STRUCT_ELEMENT_TEXTURE_RW) {
-      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RO_CONSTANT) {
-      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RO) {
-      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RW) {
-      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_SAMPLER) {
-      type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RO) {
-      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
-    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RW) {
-      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
-    }
-  }
-
-  // NOTE(Constantine):
   // Set outStructMemberThrowawaysOfResourceHandlesCount based on element's type.
-  if (type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT || type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW) {
+  if (elementType == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT || elementType == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW) {
     RedStructMemberArray * throwaways = (RedStructMemberArray *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].array                = (RedHandleArray)resourceHandles[i];
       throwaways[i].arrayRangeBytesFirst = 0;
       throwaways[i].arrayRangeBytesCount =-1;
     }
-  } else if (type == RED_STRUCT_MEMBER_TYPE_SAMPLER) {
+  } else if (elementType == RED_STRUCT_MEMBER_TYPE_SAMPLER) {
     RedStructMemberTexture * throwaways = (RedStructMemberTexture *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].sampler = (RedHandleSampler)resourceHandles[i];
@@ -799,9 +754,9 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   outElementsUpdate->setTo0    = 0;
   outElementsUpdate->structure = structure->ranges[rangeIndex];
   outElementsUpdate->slot      = slot;
-  outElementsUpdate->first     = first;
+  outElementsUpdate->first     = elementArrayFirst;
   outElementsUpdate->count     = resourceHandlesCount;
-  outElementsUpdate->type      = type;
+  outElementsUpdate->type      = elementType;
   outElementsUpdate->textures  = (const RedStructMemberTexture *)(void *)outElementsUpdateThrowawaysOfResourceHandlesCount;
   outElementsUpdate->arrays    = (const RedStructMemberArray *)(void *)outElementsUpdateThrowawaysOfResourceHandlesCount;
   outElementsUpdate->setTo00   = 0;
