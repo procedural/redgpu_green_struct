@@ -704,21 +704,21 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
     if (structure->privateIndexSlotsBitType == 0) {
       #define REDGPU_GREEN_STRUCT_SLOTS_TYPE unsigned char
 
-      const REDGPU_GREEN_STRUCT_SLOTS_TYPE * indexSlots = (REDGPU_GREEN_STRUCT_SLOTS_TYPE *)privateIndexSlotsBitType8or16or32;
+      const REDGPU_GREEN_STRUCT_SLOTS_TYPE * indexSlots = (const REDGPU_GREEN_STRUCT_SLOTS_TYPE *)privateIndexSlotsBitType8or16or32;
       slot = startSlot + indexSlots[elementIndex];
 
       #undef REDGPU_GREEN_STRUCT_SLOTS_TYPE
     } else if (structure->privateIndexSlotsBitType == 1) {
       #define REDGPU_GREEN_STRUCT_SLOTS_TYPE unsigned short
 
-      const REDGPU_GREEN_STRUCT_SLOTS_TYPE * indexSlots = (REDGPU_GREEN_STRUCT_SLOTS_TYPE *)privateIndexSlotsBitType8or16or32;
+      const REDGPU_GREEN_STRUCT_SLOTS_TYPE * indexSlots = (const REDGPU_GREEN_STRUCT_SLOTS_TYPE *)privateIndexSlotsBitType8or16or32;
       slot = startSlot + indexSlots[elementIndex];
 
       #undef REDGPU_GREEN_STRUCT_SLOTS_TYPE
     } else {
       #define REDGPU_GREEN_STRUCT_SLOTS_TYPE unsigned
 
-      const REDGPU_GREEN_STRUCT_SLOTS_TYPE * indexSlots = (REDGPU_GREEN_STRUCT_SLOTS_TYPE *)privateIndexSlotsBitType8or16or32;
+      const REDGPU_GREEN_STRUCT_SLOTS_TYPE * indexSlots = (const REDGPU_GREEN_STRUCT_SLOTS_TYPE *)privateIndexSlotsBitType8or16or32;
       slot = startSlot + indexSlots[elementIndex];
 
       #undef REDGPU_GREEN_STRUCT_SLOTS_TYPE
