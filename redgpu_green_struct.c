@@ -806,8 +806,8 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   outStructMember->setTo00   = 0;
 }
 
-REDGPU_DECLSPEC void REDGPU_API greenStructsSet(RedContext context, RedHandleGpu gpu, unsigned rangesCount, const RedStructMember * ranges, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  redStructsSet(context, gpu, rangesCount, ranges, optionalFile, optionalLine, optionalUserData);
+REDGPU_DECLSPEC void REDGPU_API greenStructsSet(RedContext context, RedHandleGpu gpu, unsigned structsMembersCount, const RedStructMember * structsMembers, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  redStructsSet(context, gpu, structsMembersCount, structsMembers, optionalFile, optionalLine, optionalUserData);
 }
 
 REDGPU_DECLSPEC void REDGPU_API greenStructFree(RedContext context, RedHandleGpu gpu, const GreenStruct * structure, const char * optionalFile, int optionalLine, void * optionalUserData) {
