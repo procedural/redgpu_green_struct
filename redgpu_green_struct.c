@@ -310,7 +310,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   members[j] = member;
                   j += 1;
                   slot += 1;
@@ -324,7 +324,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   members[j] = member;
                   j += 1;
                   membersArrayRO[k].slot = slot;
@@ -340,7 +340,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   members[j] = member;
                   j += 1;
                   slot += 1;
@@ -354,7 +354,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_SAMPLER;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   members[j] = member;
                   j += 1;
                   slot += 1;
@@ -368,7 +368,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   members[j] = member;
                   j += 1;
                   slot += 1;
@@ -382,7 +382,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   members[j] = member;
                   j += 1;
                   slot += 1;
@@ -397,7 +397,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   // NOTE(Constantine):
                   // Don't assign the member yet because we need to increment the member.count with
                   // the following GREEN_STRUCT_ELEMENT_ARRAY elements and wait for any
@@ -414,7 +414,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   membersArrayRO[k].slot = slot;
                   k += 1;
                   slot += 1;
@@ -429,7 +429,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   slot += 1;
                 } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_SAMPLER) {
                   if (prevElement == GREEN_STRUCT_ELEMENT_ARRAY) {
@@ -442,7 +442,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_SAMPLER;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   slot += 1;
                 } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RO) {
                   if (prevElement == GREEN_STRUCT_ELEMENT_ARRAY) {
@@ -455,7 +455,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   slot += 1;
                 } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RW) {
                   if (prevElement == GREEN_STRUCT_ELEMENT_ARRAY) {
@@ -468,7 +468,7 @@ found:;
                   member.type            = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
                   member.count           = 1;
                   member.visibleToStages = elementsRanges[rangeIndex].visibleToStages;
-                  member.inlineSampler   = NULL;
+                  member.inlineSampler   = 0;
                   slot += 1;
                 } else if (element == GREEN_STRUCT_ELEMENT_ARRAY) {
                   prevElement = GREEN_STRUCT_ELEMENT_ARRAY;
