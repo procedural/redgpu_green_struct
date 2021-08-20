@@ -638,19 +638,19 @@ errorExit:;
         char desc[512] = "[greenStructAllocate] No elements provided.";
         memcpy(outStatuses->statusErrorDescription, desc, 512);
       } else if (errorCode == -3) {
-        char desc[512] = "[greenStructAllocate] Calloc fail.";
+        char desc[512] = "[greenStructAllocate] calloc() fail.";
         memcpy(outStatuses->statusErrorDescription, desc, 512);
       } else if (errorCode == -4) {
-        char desc[512] = "[greenStructAllocate] Calloc fail.";
+        char desc[512] = "[greenStructAllocate] calloc() fail.";
         memcpy(outStatuses->statusErrorDescription, desc, 512);
       } else if (errorCode == -5) {
-        char desc[512] = "[greenStructAllocate] Calloc fail.";
+        char desc[512] = "[greenStructAllocate] calloc() fail.";
         memcpy(outStatuses->statusErrorDescription, desc, 512);
       } else if (errorCode == -6) {
         char desc[512] = "[greenStructAllocate] redStructsMemoryAllocate*() fail.";
         memcpy(outStatuses->statusErrorDescription, desc, 512);
       } else if (errorCode == -7) {
-        char desc[512] = "[greenStructAllocate] Calloc fail.";
+        char desc[512] = "[greenStructAllocate] calloc() fail.";
         memcpy(outStatuses->statusErrorDescription, desc, 512);
       } else if (errorCode == -8) {
         char desc[512] = "[greenStructAllocate] Internal fail.";
