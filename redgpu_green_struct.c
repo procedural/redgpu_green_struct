@@ -677,7 +677,7 @@ exit:;
   outStruct[0] = out;
 }
 
-REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outStructMember, GreenStructMemberThrowaways * outStructMemberThrowawaysOfResourceHandlesCount) {
+REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount) {
   // NOTE(Constantine):
   // First, get the range we need based on elementIndex and privateRangesIndexNextRangeElementOffset offsets.
   unsigned rangeIndex = (unsigned)-1;
@@ -772,21 +772,21 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   // NOTE(Constantine):
   // Set outStructMemberThrowawaysOfResourceHandlesCount based on element's type.
   if (type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT || type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW) {
-    RedStructMemberArray * throwaways = (RedStructMemberArray *)outStructMemberThrowawaysOfResourceHandlesCount;
+    RedStructMemberArray * throwaways = (RedStructMemberArray *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].array                = (RedHandleArray)resourceHandles[i];
       throwaways[i].arrayRangeBytesFirst = 0;
       throwaways[i].arrayRangeBytesCount =-1;
     }
   } else if (type == RED_STRUCT_MEMBER_TYPE_SAMPLER) {
-    RedStructMemberTexture * throwaways = (RedStructMemberTexture *)outStructMemberThrowawaysOfResourceHandlesCount;
+    RedStructMemberTexture * throwaways = (RedStructMemberTexture *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].sampler = (RedHandleSampler)resourceHandles[i];
       throwaways[i].texture = 0;
       throwaways[i].setTo1  = 1;
     }
   } else {
-    RedStructMemberTexture * throwaways = (RedStructMemberTexture *)outStructMemberThrowawaysOfResourceHandlesCount;
+    RedStructMemberTexture * throwaways = (RedStructMemberTexture *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].sampler = 0;
       throwaways[i].texture = (RedHandleTexture)resourceHandles[i];
@@ -794,20 +794,20 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
     }
   }
 
-  outStructMember->setTo35   = 35;
-  outStructMember->setTo0    = 0;
-  outStructMember->structure = structure->ranges[rangeIndex];
-  outStructMember->slot      = slot;
-  outStructMember->first     = first;
-  outStructMember->count     = resourceHandlesCount;
-  outStructMember->type      = type;
-  outStructMember->textures  = (const RedStructMemberTexture *)(void *)outStructMemberThrowawaysOfResourceHandlesCount;
-  outStructMember->arrays    = (const RedStructMemberArray *)(void *)outStructMemberThrowawaysOfResourceHandlesCount;
-  outStructMember->setTo00   = 0;
+  outElementsUpdate->setTo35   = 35;
+  outElementsUpdate->setTo0    = 0;
+  outElementsUpdate->structure = structure->ranges[rangeIndex];
+  outElementsUpdate->slot      = slot;
+  outElementsUpdate->first     = first;
+  outElementsUpdate->count     = resourceHandlesCount;
+  outElementsUpdate->type      = type;
+  outElementsUpdate->textures  = (const RedStructMemberTexture *)(void *)outElementsUpdateThrowawaysOfResourceHandlesCount;
+  outElementsUpdate->arrays    = (const RedStructMemberArray *)(void *)outElementsUpdateThrowawaysOfResourceHandlesCount;
+  outElementsUpdate->setTo00   = 0;
 }
 
-REDGPU_DECLSPEC void REDGPU_API greenStructsSet(RedContext context, RedHandleGpu gpu, unsigned structsMembersCount, const RedStructMember * structsMembers, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  redStructsSet(context, gpu, structsMembersCount, structsMembers, optionalFile, optionalLine, optionalUserData);
+REDGPU_DECLSPEC void REDGPU_API greenStructsSet(RedContext context, RedHandleGpu gpu, unsigned elementsUpdatesCount, const RedStructMember * elementsUpdates, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  redStructsSet(context, gpu, elementsUpdatesCount, elementsUpdates, optionalFile, optionalLine, optionalUserData);
 }
 
 REDGPU_DECLSPEC void REDGPU_API greenStructFree(RedContext context, RedHandleGpu gpu, const GreenStruct * structure, const char * optionalFile, int optionalLine, void * optionalUserData) {
