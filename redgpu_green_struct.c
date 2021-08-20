@@ -9,7 +9,7 @@ REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandl
 
   // NOTE(Constantine):
   //
-  // rangesMatch array of ranges count matches duplicate ranges to assing
+  // rangesMatch array of ranges count matches duplicate ranges to assign
   // the same value to them to create unique struct declarations for them,
   // privateStructDeclarations. Later, privateStructDeclarations are
   // assigned to rangesDeclaration according to rangesMatch values.
