@@ -25,7 +25,7 @@ typedef unsigned char GreenStructElement;
 #define GREEN_STRUCT_ELEMENT_ARRAY_START_SAMPLER           10
 #define GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RO        11
 #define GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RW        12
-#define GREEN_STRUCT_ELEMENT_ARRAY                         13
+#define GREEN_STRUCT_ELEMENT_ARRAY                         13 // GREEN_STRUCT_ELEMENT_ARRAY can't be accessed directly with greenGetRedStructMember::elementIndex, specify index of GREEN_STRUCT_ELEMENT_ARRAY_START_* and offset to the element with greenGetRedStructMember::elementArrayFirst.
 
 typedef struct GreenStructElementsRange {
   unsigned                  hlslStartSlot;
