@@ -679,7 +679,7 @@ exit:;
 
 REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outStructMember, GreenStructMemberThrowaways * outStructMemberThrowawaysOfResourceHandlesCount) {
   // NOTE(Constantine):
-  // First, we need to get the range we need based on elementIndex and privateRangesIndexNextRangeElementOffset offsets.
+  // First, get the range we need based on elementIndex and privateRangesIndexNextRangeElementOffset offsets.
   unsigned rangeIndex = (unsigned)-1;
   {
     for (unsigned i = 0, count = structure->rangesCount; i < count; i += 1) {
@@ -692,7 +692,7 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   }
 
   // NOTE(Constantine):
-  // Then, we need to get the slot we need based on privateIndexSlotsBitType and privateIndexSlotsBitType8or16or32.
+  // Then, get the slot we need based on privateIndexSlotsBitType and privateIndexSlotsBitType8or16or32.
   // Copy the code between:
   // #define REDGPU_GREEN_STRUCT_SLOTS_TYPE
   // #undef  REDGPU_GREEN_STRUCT_SLOTS_TYPE
@@ -725,7 +725,7 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   }
 
   // NOTE(Constantine):
-  // Then, we need to get the offset to the first element.
+  // Then, get the offset to the first element.
   unsigned first = (unsigned)-1;
   {
     if (rangeIndex == 0) {
@@ -737,7 +737,7 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   }
 
   // NOTE(Constantine):
-  // Lastly, we need to get the type of the element.
+  // Lastly, get the type of the element.
   RedStructMemberType type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
   {
     const unsigned start = rangeIndex == 0 ? 0 : structure->privateRangesIndexNextRangeElementOffset[rangeIndex-1];
