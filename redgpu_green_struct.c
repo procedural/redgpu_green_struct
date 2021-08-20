@@ -3,6 +3,13 @@
 #include <stdlib.h> // For calloc, free
 #include <string.h> // For memcmp, memcpy, memset
 
+#define GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RO_CONSTANT 14
+#define GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RO          15
+#define GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RW          16
+#define GREEN_STRUCT_ELEMENT_ARRAY_SAMPLER           17
+#define GREEN_STRUCT_ELEMENT_ARRAY_TEXTURE_RO        18
+#define GREEN_STRUCT_ELEMENT_ARRAY_TEXTURE_RW        19
+
 REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned elementsRangesCount, const GreenStructElementsRange * elementsRanges, GreenStruct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   GreenStruct out       = {};
   int         errorCode = 0;
@@ -227,7 +234,47 @@ REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandl
           errorCode = -5;
           goto errorExit;
         }
-        memcpy(privateRanges[i].elements, elementsRanges[i].elements, elementsRanges[i].elementsCount * sizeof(GreenStructElement));
+        GreenStructElement currentArrayType = GREEN_STRUCT_ELEMENT_UNDEFINED;
+        for (unsigned j = 0; j < elementsRanges[i].elementsCount; j += 1) {
+          if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RO_CONSTANT) {
+            currentArrayType = GREEN_STRUCT_ELEMENT_ARRAY_RO_CONSTANT;
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          } else if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RO) {
+            currentArrayType = GREEN_STRUCT_ELEMENT_ARRAY_RO;
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          } else if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RW) {
+            currentArrayType = GREEN_STRUCT_ELEMENT_ARRAY_RW;
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          } else if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY_START_SAMPLER) {
+            currentArrayType = GREEN_STRUCT_ELEMENT_SAMPLER;
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          } else if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RO) {
+            currentArrayType = GREEN_STRUCT_ELEMENT_TEXTURE_RO;
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          } else if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RW) {
+            currentArrayType = GREEN_STRUCT_ELEMENT_TEXTURE_RW;
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          } else if (elementsRanges[i].elements[j] == GREEN_STRUCT_ELEMENT_ARRAY) {
+            // NOTE(Constantine):
+            // Replace typeless GREEN_STRUCT_ELEMENT_ARRAY with typed GREEN_STRUCT_ELEMENT_ARRAY_*
+            // elements for easier indexing in greenGetRedStructMember().
+            if (currentArrayType == GREEN_STRUCT_ELEMENT_ARRAY_RO_CONSTANT) {
+              privateRanges[i].elements[j] = GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RO_CONSTANT;
+            } else if (currentArrayType == GREEN_STRUCT_ELEMENT_ARRAY_RO) {
+              privateRanges[i].elements[j] = GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RO;
+            } else if (currentArrayType == GREEN_STRUCT_ELEMENT_ARRAY_RW) {
+              privateRanges[i].elements[j] = GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RW;
+            } else if (currentArrayType == GREEN_STRUCT_ELEMENT_SAMPLER) {
+              privateRanges[i].elements[j] = GREEN_STRUCT_ELEMENT_ARRAY_SAMPLER;
+            } else if (currentArrayType == GREEN_STRUCT_ELEMENT_TEXTURE_RO) {
+              privateRanges[i].elements[j] = GREEN_STRUCT_ELEMENT_ARRAY_TEXTURE_RO;
+            } else if (currentArrayType == GREEN_STRUCT_ELEMENT_TEXTURE_RW) {
+              privateRanges[i].elements[j] = GREEN_STRUCT_ELEMENT_ARRAY_TEXTURE_RW;
+            }
+          } else {
+            privateRanges[i].elements[j] = elementsRanges[i].elements[j];
+          }
+        }
       }
       // NOTE(Constantine):
       // Allocate structs memory.
@@ -677,7 +724,7 @@ exit:;
   outStruct[0] = out;
 }
 
-REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, RedStructMemberType elementType, unsigned elementArrayFirst, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount) {
+REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * structure, unsigned elementIndex, unsigned elementArrayFirst, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount) {
   // NOTE(Constantine):
   // First, get the range we need based on elementIndex and privateRangesIndexNextRangeElementOffset offsets.
   unsigned rangeIndex = (unsigned)-1;
@@ -726,15 +773,60 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   }
 
   // NOTE(Constantine):
-  // Set outStructMemberThrowawaysOfResourceHandlesCount based on element's type.
-  if (elementType == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT || elementType == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW) {
+  // Get the type of the element.
+  RedStructMemberType type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
+  {
+    const unsigned start   = rangeIndex == 0 ? 0 : structure->privateRangesIndexNextRangeElementOffset[rangeIndex-1];
+    const unsigned element = structure->privateRanges[rangeIndex].elements[elementIndex-start];
+    if (element == GREEN_STRUCT_ELEMENT_ARRAY_RO_CONSTANT) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_RO) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_RW) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_SAMPLER) {
+      type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
+    } else if (element == GREEN_STRUCT_ELEMENT_TEXTURE_RO) {
+      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
+    } else if (element == GREEN_STRUCT_ELEMENT_TEXTURE_RW) {
+      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RO_CONSTANT) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RO) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_ARRAY_RW) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_SAMPLER) {
+      type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RO) {
+      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_START_TEXTURE_RW) {
+      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RO_CONSTANT) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RO) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_ARRAY_RW) {
+      type = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_SAMPLER) {
+      type = RED_STRUCT_MEMBER_TYPE_SAMPLER;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_TEXTURE_RO) {
+      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RO;
+    } else if (element == GREEN_STRUCT_ELEMENT_ARRAY_TEXTURE_RW) {
+      type = RED_STRUCT_MEMBER_TYPE_TEXTURE_RW;
+    }
+  }
+
+  // NOTE(Constantine):
+  // Set outElementsUpdateThrowawaysOfResourceHandlesCount based on element's type.
+  if (type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT || type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW) {
     RedStructMemberArray * throwaways = (RedStructMemberArray *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].array                = (RedHandleArray)resourceHandles[i];
       throwaways[i].arrayRangeBytesFirst = 0;
       throwaways[i].arrayRangeBytesCount =-1;
     }
-  } else if (elementType == RED_STRUCT_MEMBER_TYPE_SAMPLER) {
+  } else if (type == RED_STRUCT_MEMBER_TYPE_SAMPLER) {
     RedStructMemberTexture * throwaways = (RedStructMemberTexture *)outElementsUpdateThrowawaysOfResourceHandlesCount;
     for (unsigned i = 0; i < resourceHandlesCount; i += 1) {
       throwaways[i].sampler = (RedHandleSampler)resourceHandles[i];
@@ -756,7 +848,7 @@ REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember(const GreenStruct * stru
   outElementsUpdate->slot      = slot;
   outElementsUpdate->first     = elementArrayFirst;
   outElementsUpdate->count     = resourceHandlesCount;
-  outElementsUpdate->type      = elementType;
+  outElementsUpdate->type      = type;
   outElementsUpdate->textures  = (const RedStructMemberTexture *)(void *)outElementsUpdateThrowawaysOfResourceHandlesCount;
   outElementsUpdate->arrays    = (const RedStructMemberArray *)(void *)outElementsUpdateThrowawaysOfResourceHandlesCount;
   outElementsUpdate->setTo00   = 0;

@@ -54,7 +54,7 @@ typedef union GreenStructMemberThrowaways {
 } GreenStructMemberThrowaways;
 
 REDGPU_DECLSPEC void REDGPU_API greenStructAllocate     (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned elementsRangesCount, const GreenStructElementsRange * elementsRanges, GreenStruct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember (const GreenStruct * structure, unsigned elementIndex, RedStructMemberType elementType, unsigned elementArrayFirst, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount);
+REDGPU_DECLSPEC void REDGPU_API greenGetRedStructMember (const GreenStruct * structure, unsigned elementIndex, unsigned elementArrayFirst, unsigned resourceHandlesCount, const void ** resourceHandles, RedStructMember * outElementsUpdate, GreenStructMemberThrowaways * outElementsUpdateThrowawaysOfResourceHandlesCount);
 REDGPU_DECLSPEC void REDGPU_API greenStructsSet         (RedContext context, RedHandleGpu gpu, unsigned elementsUpdatesCount, const RedStructMember * elementsUpdates, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_DECLSPEC void REDGPU_API greenStructFree         (RedContext context, RedHandleGpu gpu, const GreenStruct * structure, const char * optionalFile, int optionalLine, void * optionalUserData);
 
