@@ -814,9 +814,13 @@ REDGPU_DECLSPEC void REDGPU_API greenStructFree(RedContext context, RedHandleGpu
   if (structure == 0) {
     return;
   }
-  redStructsMemoryFree(context, gpu, structure->memory, optionalFile, optionalLine, optionalUserData);
+  if (structure->memory != 0) {
+    redStructsMemoryFree(context, gpu, structure->memory, optionalFile, optionalLine, optionalUserData);
+  }
   for (unsigned i = 0; i < structure->privateStructDeclarationsCount; i += 1) {
-    redDestroyStructDeclaration(context, gpu, structure->privateStructDeclarations[i], optionalFile, optionalLine, optionalUserData);
+    if (structure->privateStructDeclarations[i] != 0) {
+      redDestroyStructDeclaration(context, gpu, structure->privateStructDeclarations[i], optionalFile, optionalLine, optionalUserData);
+    }
   }
   if (structure->privateRanges != 0) {
     for (unsigned i = 0; i < structure->rangesCount; i += 1) {
