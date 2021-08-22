@@ -1,5 +1,5 @@
 # This CMakeLists.txt project is for Ubuntu only
-project(main C)
+project(redgpu_green_struct C)
 cmake_minimum_required(VERSION 2.8.12)
 link_libraries(
   /opt/RedGpuSDK/libredgpu.so
