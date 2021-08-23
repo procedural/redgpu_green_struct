@@ -45,18 +45,18 @@ int main() {
   RmaArray array2 = {};
   rmaCreateArraySimple(vma, sizeof(float4), RED_ARRAY_TYPE_ARRAY_RW, VMA_MEMORY_USAGE_GPU_TO_CPU, 0, -1, &array2);
 
-  float4 * array0ptr = array0.memoryInfo.pMappedData;
-  float4 * array1ptr = array1.memoryInfo.pMappedData;
+  float4 * array0p = array0.memoryInfo.pMappedData;
+  float4 * array1p = array1.memoryInfo.pMappedData;
 
-  array0ptr[0].x = 4;
-  array0ptr[0].y = 8;
-  array0ptr[0].z = 15;
-  array0ptr[0].w = 16;
+  array0p[0].x = 4;
+  array0p[0].y = 8;
+  array0p[0].z = 15;
+  array0p[0].w = 16;
 
-  array1ptr[0].x = 16;
-  array1ptr[0].y = 23;
-  array1ptr[0].z = 42;
-  array1ptr[0].w = 108;
+  array1p[0].x = 16;
+  array1p[0].y = 23;
+  array1p[0].z = 42;
+  array1p[0].w = 108;
 
   rmaDestroyArray(&array0);
   rmaDestroyArray(&array1);
