@@ -110,6 +110,18 @@ int main() {
   callPAs.redCallSetProcedureParametersStructs(calls.handle, RED_PROCEDURE_TYPE_COMPUTE, addParameters, 0, 1, addStruct.ranges, 0, 0);
   callPAs.redCallSetProcedure(calls.handle, RED_PROCEDURE_TYPE_COMPUTE, addProcedure);
   callPAs.redCallProcedureCompute(calls.handle, 1, 1, 1);
+  RedUsageArray array2Usage = {};
+  array2Usage.barrierSplit           = RED_BARRIER_SPLIT_NONE;
+  array2Usage.oldAccessStages        = RED_ACCESS_STAGE_BITFLAG_COMPUTE;
+  array2Usage.newAccessStages        = RED_ACCESS_STAGE_BITFLAG_CPU;
+  array2Usage.oldAccess              = RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W;
+  array2Usage.newAccess              = RED_ACCESS_BITFLAG_CPU_RW;
+  array2Usage.queueFamilyIndexSource =-1;
+  array2Usage.queueFamilyIndexTarget =-1;
+  array2Usage.array                  = array2.handle;
+  array2Usage.arrayBytesFirst        = 0;
+  array2Usage.arrayBytesCount        =-1;
+  redCallUsageAliasOrderBarrier(callPAs.redCallUsageAliasOrderBarrier, calls.handle, context, 1, &array2Usage, 0, 0, 0, 0, 0, 0, 0);
   redCallsEnd(context, context->gpus[gpuIndex].gpu, calls.handle, calls.memory, 0, __FILE__, __LINE__, 0);
 
   RedHandleCpuSignal cpuSignal = 0;
