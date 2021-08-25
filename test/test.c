@@ -46,8 +46,8 @@ int main() {
   RmaArray array2 = {};
   rmaCreateArraySimple(vma, sizeof(float4), RED_ARRAY_TYPE_ARRAY_RW, VMA_MEMORY_USAGE_GPU_TO_CPU, 0, -1, &array2);
 
-  float4 * array0p = array0.memoryInfo.pMappedData;
-  float4 * array1p = array1.memoryInfo.pMappedData;
+  volatile float4 * array0p = (volatile float4 *)array0.memoryInfo.pMappedData;
+  volatile float4 * array1p = (volatile float4 *)array1.memoryInfo.pMappedData;
 
   array0p[0].x = 4;
   array0p[0].y = 8;
@@ -141,7 +141,7 @@ int main() {
   redCpuSignalWait(context, context->gpus[gpuIndex].gpu, 1, &cpuSignal, 1, 0, __FILE__, __LINE__, 0);
   redCpuSignalUnsignal(context, context->gpus[gpuIndex].gpu, 1, &cpuSignal, 0, __FILE__, __LINE__, 0);
 
-  float4 * array2p = 0;
+  volatile float4 * array2p = 0;
   vmaMapMemory(vma, array2.memory, (void **)&array2p);
   // NOTE(Constantine): "array2p: 20.000000 31.000000 57.000000 124.000000"
   printf("array2p: %f %f %f %f\n", array2p[0].x, array2p[0].y, array2p[0].z, array2p[0].w);
