@@ -670,7 +670,7 @@ goto exit;
 
 errorExit:;
 
-  if (errorCode != 0 && outStatuses != 0) {
+  if (outStatuses != 0) {
     if (outStatuses->statusError == RED_STATUS_SUCCESS) {
       outStatuses->statusError            = RED_STATUS_ERROR_VALIDATION_FAILED;
       outStatuses->statusErrorCode        = 0;
