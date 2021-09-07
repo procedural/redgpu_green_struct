@@ -104,7 +104,7 @@ int main() {
   redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", sizeof(add_cs_h), add_cs_h, &addGpuCode, 0, __FILE__, __LINE__, 0);
   redCreateProcedureCompute(context, context->gpus[gpuIndex].gpu, "addProcedure", 0, addParameters, "main", addGpuCode, &addProcedure, 0, __FILE__, __LINE__, 0);
 #endif
-#if 1 // OpenCL SPIR-V
+#if 1 // OpenCL C SPIR-V
   // NOTE(Constantine): Test on Linux only for now.
   struct stat spvInfo = {};
   stat("../add.cl.spv", &spvInfo);
@@ -113,10 +113,10 @@ int main() {
   fread(spv, spvInfo.st_size, 1, fd);
   fclose(fd);
   redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", spvInfo.st_size, spv, &addGpuCode, 0, __FILE__, __LINE__, 0);
-  unsigned specsData[3] = {};
-  specsData[0] = 1;
-  specsData[1] = 1;
-  specsData[2] = 1;
+  unsigned specData[3] = {};
+  specData[0] = 1;
+  specData[1] = 1;
+  specData[2] = 1;
   RedProcedureComputingLanguageSpecializationConstant specs[3] = {};
   specs[0].specId             = 0;
   specs[0].specDataBytesFirst = 0 * sizeof(unsigned);
@@ -132,8 +132,8 @@ int main() {
   spec.next               = 0;
   spec.specsCount         = 3;
   spec.specs              = specs;
-  spec.specDataBytesCount = sizeof(specsData);
-  spec.specData           = specsData;
+  spec.specDataBytesCount = sizeof(specData);
+  spec.specData           = specData;
   redCreateProcedureComputingLanguage(context, context->gpus[gpuIndex].gpu, "addProcedure", 0, addParameters, "mainAdd", addGpuCode, &spec, &addProcedure, 0, __FILE__, __LINE__, 0);
   free(spv);
 #endif
