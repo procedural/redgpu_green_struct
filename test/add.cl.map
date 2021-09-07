@@ -1,0 +1,7 @@
+kernel_decl,mainAdd
+kernel,mainAdd,arg,a,argOrdinal,0,descriptorSet,0,binding,0,offset,0,argKind,buffer
+kernel,mainAdd,arg,b,argOrdinal,1,descriptorSet,0,binding,1,offset,0,argKind,buffer
+kernel,mainAdd,arg,c,argOrdinal,2,descriptorSet,0,binding,2,offset,0,argKind,buffer
+spec_constant,workgroup_size_x,spec_id,0
+spec_constant,workgroup_size_y,spec_id,1
+spec_constant,workgroup_size_z,spec_id,2

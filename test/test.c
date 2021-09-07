@@ -1,9 +1,18 @@
+#ifdef _WIN32
+#include "C:/RedGpuSDK/redgpu_computing_language.h"
+#endif
+#ifdef __linux__
+#include "/opt/RedGpuSDK/redgpu_computing_language.h"
+#endif
 #include "../redgpu_green_struct.h"
 #include "../../redgpu_memory_allocator/redgpu_memory_allocator.h"
 #include "../../redgpu_memory_allocator/redgpu_memory_allocator_functions.h"
 
-#include <stdlib.h> // For malloc, free
-#include <stdio.h>  // For printf
+#include <stdlib.h>   // For malloc, free
+#include <stdio.h>    // For printf
+#ifdef __linux__
+#include <sys/stat.h> // For stat
+#endif
 
 typedef struct RmaArray {
   RedHandleArray    handle;
@@ -21,8 +30,10 @@ typedef struct float4 {
 } float4;
 
 int main() {
-  RedContext context = 0;
-  redCreateContext(malloc, free, 0, 0, 0, RED_SDK_VERSION_1_0_135, 0, 0, 0, 0, 0, 0, 0, &context, 0, __FILE__, __LINE__, 0);
+  RedContext context       = 0;
+  unsigned   extensions[1] = {};
+  extensions[0] = RED_SDK_EXTENSION_COMPUTING_LANGUAGE_FEATURE_LEVEL_1;
+  redCreateContext(malloc, free, 0, 0, 0, RED_SDK_VERSION_1_0_135, sizeof(extensions) / sizeof(extensions[0]), extensions, 0, 0, 0, 0, 0, &context, 0, __FILE__, __LINE__, 0);
 
   if (context == 0) {
     return 1;
@@ -86,11 +97,46 @@ int main() {
   addParametersDecl.handlesDeclaration       = 0;
   RedHandleProcedureParameters addParameters = 0;
   redCreateProcedureParameters(context, context->gpus[gpuIndex].gpu, "addParameters", &addParametersDecl, &addParameters, 0, __FILE__, __LINE__, 0);
-  #include "add.cs.h"
-  RedHandleGpuCode addGpuCode = 0;
-  redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", sizeof(add_cs_h), add_cs_h, &addGpuCode, 0, __FILE__, __LINE__, 0);
+  RedHandleGpuCode   addGpuCode   = 0;
   RedHandleProcedure addProcedure = 0;
+#if 0 // HLSL SPIR-V
+  #include "add.cs.h"
+  redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", sizeof(add_cs_h), add_cs_h, &addGpuCode, 0, __FILE__, __LINE__, 0);
   redCreateProcedureCompute(context, context->gpus[gpuIndex].gpu, "addProcedure", 0, addParameters, "main", addGpuCode, &addProcedure, 0, __FILE__, __LINE__, 0);
+#endif
+#if 1 // OpenCL SPIR-V
+  // NOTE(Constantine): Test on Linux only for now.
+  struct stat spvInfo = {};
+  stat("../add.cl.spv", &spvInfo);
+  void * spv = malloc(spvInfo.st_size);
+  FILE * fd  = fopen("../add.cl.spv", "rb");
+  fread(spv, spvInfo.st_size, 1, fd);
+  fclose(fd);
+  redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", spvInfo.st_size, spv, &addGpuCode, 0, __FILE__, __LINE__, 0);
+  unsigned specsData[3] = {};
+  specsData[0] = 1;
+  specsData[1] = 1;
+  specsData[2] = 1;
+  RedProcedureComputingLanguageSpecializationConstant specs[3] = {};
+  specs[0].specId             = 0;
+  specs[0].specDataBytesFirst = 0 * sizeof(unsigned);
+  specs[0].specDataBytesCount = 1 * sizeof(unsigned);
+  specs[1].specId             = 1;
+  specs[1].specDataBytesFirst = 1 * sizeof(unsigned);
+  specs[1].specDataBytesCount = 1 * sizeof(unsigned);
+  specs[2].specId             = 2;
+  specs[2].specDataBytesFirst = 2 * sizeof(unsigned);
+  specs[2].specDataBytesCount = 1 * sizeof(unsigned);
+  RedProcedureComputingLanguageStateExtensionSpecializationConstants spec = {};
+  spec.extension          = RED_PROCEDURE_COMPUTING_LANGUAGE_STATE_EXTENSION_SPECIALIZATION_CONSTANTS;
+  spec.next               = 0;
+  spec.specsCount         = 3;
+  spec.specs              = specs;
+  spec.specDataBytesCount = sizeof(specsData);
+  spec.specData           = specsData;
+  redCreateProcedureComputingLanguage(context, context->gpus[gpuIndex].gpu, "addProcedure", 0, addParameters, "mainAdd", addGpuCode, &spec, &addProcedure, 0, __FILE__, __LINE__, 0);
+  free(spv);
+#endif
 
   RedStructMember             updates[3]     = {};
   GreenStructMemberThrowaways updatesMisc[3] = {};
