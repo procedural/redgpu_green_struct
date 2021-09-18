@@ -169,7 +169,7 @@ REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandl
     unsigned structDeclarationsCount = 0;
     // NOTE(Constantine):
     // rangesMatch are of ranges count, no need for it to be per element because only entire ranges can match.
-    rangesMatch = calloc(1, elementsRangesCount * sizeof(unsigned));
+    rangesMatch = (unsigned *)calloc(1, elementsRangesCount * sizeof(unsigned));
     if (rangesMatch == 0) {
       errorCode = -3;
       goto errorExit;
@@ -205,14 +205,14 @@ REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandl
     {
       RedHandleStructsMemory       memory                                   = 0;
       unsigned                     rangesCount                              = elementsRangesCount;
-      RedHandleStruct *            ranges                                   = calloc(1, elementsRangesCount * sizeof(RedHandleStruct));
-      RedHandleStructDeclaration * rangesDeclaration                        = calloc(1, elementsRangesCount * sizeof(RedHandleStructDeclaration));
-      GreenStructElementsRange *   privateRanges                            = calloc(1, elementsRangesCount * sizeof(GreenStructElementsRange));
-      unsigned *                   privateRangesIndexNextRangeElementOffset = calloc(1, elementsRangesCount * sizeof(unsigned));
+      RedHandleStruct *            ranges                                   = (RedHandleStruct *)calloc(1, elementsRangesCount * sizeof(RedHandleStruct));
+      RedHandleStructDeclaration * rangesDeclaration                        = (RedHandleStructDeclaration *)calloc(1, elementsRangesCount * sizeof(RedHandleStructDeclaration));
+      GreenStructElementsRange *   privateRanges                            = (GreenStructElementsRange *)calloc(1, elementsRangesCount * sizeof(GreenStructElementsRange));
+      unsigned *                   privateRangesIndexNextRangeElementOffset = (unsigned *)calloc(1, elementsRangesCount * sizeof(unsigned));
       unsigned                     privateIndexSlotsBitType                 = indexSlotsBitType;
       void *                       privateIndexSlotsBitType8or16or32        = calloc(1, totalElementsCount * (indexSlotsBitType == 0 ? sizeof(unsigned char) : (indexSlotsBitType == 1 ? sizeof(unsigned short) : sizeof(unsigned))));
       unsigned                     privateStructDeclarationsCount           = structDeclarationsCount;
-      RedHandleStructDeclaration * privateStructDeclarations                = calloc(1, structDeclarationsCount * sizeof(RedHandleStructDeclaration));
+      RedHandleStructDeclaration * privateStructDeclarations                = (RedHandleStructDeclaration *)calloc(1, structDeclarationsCount * sizeof(RedHandleStructDeclaration));
       if (ranges                                   == 0 ||
           rangesDeclaration                        == 0 ||
           privateRanges                            == 0 ||
@@ -229,7 +229,7 @@ REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandl
         privateRanges[i].hlslStartSlot   = elementsRanges[i].hlslStartSlot;
         privateRanges[i].visibleToStages = elementsRanges[i].visibleToStages;
         privateRanges[i].elementsCount   = elementsRanges[i].elementsCount;
-        privateRanges[i].elements        = calloc(1, elementsRanges[i].elementsCount * sizeof(GreenStructElement));
+        privateRanges[i].elements        = (GreenStructElement *)calloc(1, elementsRanges[i].elementsCount * sizeof(GreenStructElement));
         if (privateRanges[i].elements == 0) {
           errorCode = -5;
           goto errorExit;
@@ -296,8 +296,8 @@ REDGPU_DECLSPEC void REDGPU_API greenStructAllocate(RedContext context, RedHandl
       {
         // NOTE(Constantine):
         // Allocate temporary arrays needed for redCreateStructDeclaration().
-        RedStructDeclarationMember *        members        = calloc(1, biggestRangeElementsCount * sizeof(RedStructDeclarationMember));
-        RedStructDeclarationMemberArrayRO * membersArrayRO = calloc(1, biggestRangeElementsCount * sizeof(RedStructDeclarationMemberArrayRO));
+        RedStructDeclarationMember *        members        = (RedStructDeclarationMember *)calloc(1, biggestRangeElementsCount * sizeof(RedStructDeclarationMember));
+        RedStructDeclarationMemberArrayRO * membersArrayRO = (RedStructDeclarationMemberArrayRO *)calloc(1, biggestRangeElementsCount * sizeof(RedStructDeclarationMemberArrayRO));
         if (members == 0 || membersArrayRO == 0) {
           // NOTE(Constantine):
           // Free the temporary arrays here because

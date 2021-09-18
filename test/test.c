@@ -10,9 +10,7 @@
 
 #include <stdlib.h>   // For malloc, free
 #include <stdio.h>    // For printf
-#ifdef __linux__
 #include <sys/stat.h> // For stat
-#endif
 
 typedef struct RmaArray {
   RedHandleArray    handle;
@@ -105,11 +103,18 @@ int main() {
   redCreateProcedureCompute(context, context->gpus[gpuIndex].gpu, "addProcedure", 0, addParameters, "main", addGpuCode, &addProcedure, 0, __FILE__, __LINE__, 0);
 #endif
 #if 1 // OpenCL C SPIR-V
-  // NOTE(Constantine): Test on Linux only for now.
   struct stat spvInfo = {};
+#ifdef _WIN32
+  stat("add.cl.spv", &spvInfo);
+#else
   stat("../add.cl.spv", &spvInfo);
+#endif
   void * spv = malloc(spvInfo.st_size);
+#ifdef _WIN32
+  FILE * fd  = fopen("add.cl.spv", "rb");
+#else
   FILE * fd  = fopen("../add.cl.spv", "rb");
+#endif
   fread(spv, spvInfo.st_size, 1, fd);
   fclose(fd);
   redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", spvInfo.st_size, spv, &addGpuCode, 0, __FILE__, __LINE__, 0);
