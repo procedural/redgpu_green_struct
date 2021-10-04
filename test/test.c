@@ -5,8 +5,8 @@
 #include "/opt/RedGpuSDK/redgpu_computing_language.h"
 #endif
 #include "../redgpu_green_struct.h"
-#include "../../redgpu_memory_allocator/redgpu_memory_allocator.h"
-#include "../../redgpu_memory_allocator/redgpu_memory_allocator_functions.h"
+#include "../../redgpu_memory_allocator_vma/redgpu_memory_allocator.h"
+#include "../../redgpu_memory_allocator_vma/redgpu_memory_allocator_functions.h"
 
 #include <stdlib.h>   // For malloc, free
 #include <stdio.h>    // For printf

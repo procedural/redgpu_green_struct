@@ -9,6 +9,6 @@ link_libraries(
 add_executable(test
   test.c
   ../redgpu_green_struct.c
-  ../../redgpu_memory_allocator/redgpu_memory_allocator.cpp
-  ../../redgpu_memory_allocator/redgpu_memory_allocator_functions.cpp
+  ../../redgpu_memory_allocator_vma/redgpu_memory_allocator.cpp
+  ../../redgpu_memory_allocator_vma/redgpu_memory_allocator_functions.cpp
 )
