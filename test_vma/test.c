@@ -13,7 +13,7 @@
 #include <sys/stat.h> // For stat
 
 typedef struct RmaArray {
-  RedHandleArray    handle;
+  RedArray          array;
   VmaAllocator      allocator;
   VmaAllocation     memory;
   VmaAllocationInfo memoryInfo;
@@ -145,9 +145,9 @@ int main() {
 
   RedStructMember             updates[3]     = {};
   GreenStructMemberThrowaways updatesMisc[3] = {};
-  greenGetRedStructMember(&addStruct, 0, 0, 1, (const void **)&array0.handle, &updates[0], &updatesMisc[0]);
-  greenGetRedStructMember(&addStruct, 1, 0, 1, (const void **)&array1.handle, &updates[1], &updatesMisc[1]);
-  greenGetRedStructMember(&addStruct, 2, 0, 1, (const void **)&array2.handle, &updates[2], &updatesMisc[2]);
+  greenGetRedStructMember(&addStruct, 0, 0, 1, (const void **)&array0.array.handle, &updates[0], &updatesMisc[0]);
+  greenGetRedStructMember(&addStruct, 1, 0, 1, (const void **)&array1.array.handle, &updates[1], &updatesMisc[1]);
+  greenGetRedStructMember(&addStruct, 2, 0, 1, (const void **)&array2.array.handle, &updates[2], &updatesMisc[2]);
   greenStructsSet(context, context->gpus[gpuIndex].gpu, sizeof(updates) / sizeof(updates[0]), updates, __FILE__, __LINE__, 0);
 
   unsigned queueFamilyIndex = 0;
@@ -169,7 +169,7 @@ int main() {
   array2Usage.newAccess              = RED_ACCESS_BITFLAG_CPU_RW;
   array2Usage.queueFamilyIndexSource =-1;
   array2Usage.queueFamilyIndexTarget =-1;
-  array2Usage.array                  = array2.handle;
+  array2Usage.array                  = array2.array.handle;
   array2Usage.arrayBytesFirst        = 0;
   array2Usage.arrayBytesCount        =-1;
   redCallUsageAliasOrderBarrier(callPAs.redCallUsageAliasOrderBarrier, calls.handle, context, 1, &array2Usage, 0, 0, 0, 0, 0, 0, 0);
@@ -268,9 +268,9 @@ RedStatus rmaCreateArraySimple(VmaAllocator allocator, uint64_t bytesCount, RedA
   arrayVmaInfo.pUserData      = 0;
   arrayVmaInfo.priority       = 0;
   outArray->allocator = allocator;
-  return vmaCreateBuffer(allocator, &arrayCreateInfo, &arrayVmaInfo, &outArray->handle, &outArray->memory, &outArray->memoryInfo);
+  return vmaCreateBuffer(allocator, &arrayCreateInfo, &arrayVmaInfo, &outArray->array, &outArray->memory, &outArray->memoryInfo);
 }
 
 void rmaDestroyArray(const RmaArray * array) {
-  vmaDestroyBuffer(array->allocator, array->handle, array->memory);
+  vmaDestroyBuffer(array->allocator, array->array.handle, array->memory);
 }
