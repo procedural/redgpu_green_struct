@@ -157,11 +157,11 @@ REDGPU_DECLSPEC void REDGPU_API greenStructHeapAllocate(RedContext context, RedH
   internalGreenStructHeapAllocate(0, context, gpu, handleName, structDeclarationsCount, structDeclarations, outStructHeap, outStatuses, optionalFile, optionalLine, optionalUserData);
 }
 
-REDGPU_DECLSPEC void REDGPU_API greenStructHeapReset(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_DECLSPEC void REDGPU_API greenStructHeapReset(RedContext context, RedHandleGpu gpu, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleStructsMemory memory = outStructHeap->memory;
   internalGreenStructHeapFree(0, context, gpu, outStructHeap, optionalFile, optionalLine, optionalUserData);
   redStructsMemoryReset(context, gpu, memory, outStatuses, optionalFile, optionalLine, optionalUserData);
-  internalGreenStructHeapAllocate(memory, context, gpu, handleName, structDeclarationsCount, structDeclarations, outStructHeap, outStatuses, optionalFile, optionalLine, optionalUserData);
+  internalGreenStructHeapAllocate(memory, context, gpu, 0, structDeclarationsCount, structDeclarations, outStructHeap, outStatuses, optionalFile, optionalLine, optionalUserData);
 }
 
 REDGPU_DECLSPEC void REDGPU_API greenStructHeapsSet(RedContext context, RedHandleGpu gpu, unsigned structHeapsSetsCount, const GreenStructHeapSet * structHeapsSets, const char * optionalFile, int optionalLine, void * optionalUserData) {
