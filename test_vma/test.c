@@ -100,7 +100,7 @@ int main() {
   addParametersDecl.variablesVisibleToStages = 0;
   addParametersDecl.variablesBytesCount      = 0;
   addParametersDecl.structsDeclarationsCount = 1;
-  addParametersDecl.structsDeclarations[0]   = addStructHeap.structsDeclaration[0].structDeclaration;
+  addParametersDecl.structsDeclarations[0]   = addStructHeap.structsDeclaration[0];
   addParametersDecl.structsDeclarations[1]   = 0;
   addParametersDecl.structsDeclarations[2]   = 0;
   addParametersDecl.structsDeclarations[3]   = 0;

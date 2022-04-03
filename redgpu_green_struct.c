@@ -11,33 +11,12 @@ static void internalGreenStructHeapAllocate(RedHandleStructsMemory keptStructsMe
   if (outStructHeap->structs == 0) {
     return;
   }
-  outStructHeap->structsDeclaration = (GreenStructDeclaration *)calloc(1, structDeclarationsCount * sizeof(GreenStructDeclaration));
+  outStructHeap->structsDeclaration = (RedHandleStructDeclaration *)calloc(1, structDeclarationsCount * sizeof(void *));
   if (outStructHeap->structsDeclaration == 0) {
     return;
   }
-  // NOTE(Constantine): Deep copying structDeclarations.
-  for (unsigned j = 0; j < structDeclarationsCount; j += 1) {
-    RedStructDeclarationMember * structDeclarationMembers = (RedStructDeclarationMember *)calloc(1, structDeclarations[j].structDeclarationMembersCount * sizeof(RedStructDeclarationMember));
-    if (structDeclarationMembers == 0) {
-      return;
-    }
-    RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO = (RedStructDeclarationMemberArrayRO *)calloc(1, structDeclarations[j].structDeclarationMembersArrayROCount * sizeof(RedStructDeclarationMemberArrayRO));
-    if (structDeclarationMembersArrayRO == 0) {
-      return;
-    }
-    for (unsigned i = 0; i < structDeclarations[j].structDeclarationMembersCount; i += 1) {
-      structDeclarationMembers[i] = structDeclarations[j].structDeclarationMembers[i];
-      // NOTE(Constantine): Currently not deep copying the RedStructDeclarationMember::inlineSampler handle.
-      if (structDeclarationMembers[i].inlineSampler != 0) {
-        structDeclarationMembers[i].inlineSampler = 0;
-      }
-    }
-    for (unsigned i = 0; i < structDeclarations[j].structDeclarationMembersArrayROCount; i += 1) {
-      structDeclarationMembersArrayRO[i] = structDeclarations[j].structDeclarationMembersArrayRO[i];
-    }
-    outStructHeap->structsDeclaration[j]                                 = structDeclarations[j];
-    outStructHeap->structsDeclaration[j].structDeclarationMembers        = structDeclarationMembers;
-    outStructHeap->structsDeclaration[j].structDeclarationMembersArrayRO = structDeclarationMembersArrayRO;
+  for (unsigned i = 0; i < structDeclarationsCount; i += 1) {
+    outStructHeap->structsDeclaration[i] = structDeclarations[i].structDeclaration;
   }
 
   unsigned maxStructsMembersOfTypeArrayROConstantCount  = 0;
@@ -145,10 +124,6 @@ static void internalGreenStructHeapFree(RedBool32 destroyStructsMemory, RedConte
   free(structHeap->privateStructsMembers);
   free(structHeap->privateStructsMembersArray);
   free(structHeap->privateStructsMembersTexture);
-  for (unsigned i = 0; i < structHeap->structsCount; i += 1) {
-    free(structHeap->structsDeclaration[i].structDeclarationMembers);
-    free(structHeap->structsDeclaration[i].structDeclarationMembersArrayRO);
-  }
   free(structHeap->structsDeclaration);
   free(structHeap->structs);
 }

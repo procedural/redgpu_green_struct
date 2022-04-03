@@ -22,15 +22,15 @@ typedef struct GreenStructDeclaration {
 } GreenStructDeclaration;
 
 typedef struct GreenStructHeap {
-  RedHandleStructsMemory   memory;
-  unsigned                 structsCount;
-  RedHandleStruct *        structs;
-  GreenStructDeclaration * structsDeclaration;
+  RedHandleStructsMemory       memory;
+  unsigned                     structsCount;
+  RedHandleStruct *            structs;
+  RedHandleStructDeclaration * structsDeclaration;
 
   // NOTE(Constantine): Private members; used internally.
-  RedStructMember *        privateStructsMembers;
-  RedStructMemberArray *   privateStructsMembersArray;
-  RedStructMemberTexture * privateStructsMembersTexture;
+  RedStructMember *            privateStructsMembers;
+  RedStructMemberArray *       privateStructsMembersArray;
+  RedStructMemberTexture *     privateStructsMembersTexture;
 } GreenStructHeap;
 
 typedef struct GreenStructHeapSet {
