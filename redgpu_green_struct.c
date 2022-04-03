@@ -4,7 +4,7 @@
 #include <string.h> // For memcmp, memcpy, memset
 
 static void internalGreenStructHeapAllocate(RedHandleStructsMemory keptStructsMemory, RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  GreenStructHeap empty = {};
+  GreenStructHeap empty = {0};
   outStructHeap[0] = empty;
   outStructHeap->structsCount = structDeclarationsCount;
   outStructHeap->structs      = (RedHandleStruct *)calloc(1, structDeclarationsCount * sizeof(RedHandleStruct));
