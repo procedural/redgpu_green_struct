@@ -1,12 +1,9 @@
 #ifdef _WIN32
-#include "C:/RedGpuSDK/redgpu_computing_language.h"
+#include "C:/github/procedural/redgpu_ultimate/redgpu_ultimate.h"
 #endif
 #ifdef __linux__
-#include "/opt/RedGpuSDK/redgpu_computing_language.h"
+#include "/opt/github/procedural/redgpu_ultimate/redgpu_ultimate.h"
 #endif
-#include "../redgpu_green_struct.h"
-#include "../../redgpu_memory_allocator_vma/redgpu_memory_allocator.h"
-#include "../../redgpu_memory_allocator_vma/redgpu_memory_allocator_functions.h"
 
 #include <stdlib.h>   // For malloc, free
 #include <stdio.h>    // For printf

@@ -1,1 +1,1 @@
-cl /EHsc test.cpp ../redgpu_green_struct.cpp ../../redgpu_memory_allocator_vma/redgpu_memory_allocator.cpp ../../redgpu_memory_allocator_vma/redgpu_memory_allocator_functions.cpp /link C:/RedGpuSDK/redgpudll.lib
+cl /EHsc test.cpp C:/github/procedural/redgpu_ultimate/redgpu_ultimate_c.c C:/github/procedural/redgpu_ultimate/redgpu_ultimate_cpp.cpp /link C:/RedGpuSDK/redgpudll.lib
