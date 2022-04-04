@@ -128,6 +128,10 @@ static void internalGreenStructHeapFree(RedBool32 destroyStructsMemory, RedConte
   free(structHeap->structs);
 }
 
+REDGPU_DECLSPEC void REDGPU_API greenCreateStructDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, GreenStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  redCreateStructDeclaration(context, gpu, handleName, outStructDeclaration->structDeclarationMembersCount, outStructDeclaration->structDeclarationMembers, outStructDeclaration->structDeclarationMembersArrayROCount, outStructDeclaration->structDeclarationMembersArrayRO, outStructDeclaration->procedureParametersHandlesDeclaration, &outStructDeclaration->structDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+}
+
 REDGPU_DECLSPEC void REDGPU_API greenStructHeapAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   internalGreenStructHeapAllocate(0, context, gpu, handleName, structDeclarationsCount, structDeclarations, outStructHeap, outStatuses, optionalFile, optionalLine, optionalUserData);
 }

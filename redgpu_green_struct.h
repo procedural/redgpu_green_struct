@@ -40,10 +40,12 @@ typedef struct GreenStructHeapSet {
   void **                 resourceHandles;
 } GreenStructHeapSet;
 
-REDGPU_DECLSPEC void REDGPU_API greenStructHeapAllocate (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_DECLSPEC void REDGPU_API greenStructHeapReset    (RedContext context, RedHandleGpu gpu, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_DECLSPEC void REDGPU_API greenStructHeapsSet     (RedContext context, RedHandleGpu gpu, unsigned structHeapsSetsCount, const GreenStructHeapSet * structHeapsSets, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_DECLSPEC void REDGPU_API greenStructHeapFree     (RedContext context, RedHandleGpu gpu, const GreenStructHeap * structHeap, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC void REDGPU_API greenCreateStructDeclaration (RedContext context, RedHandleGpu gpu, const char * handleName, GreenStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+
+REDGPU_DECLSPEC void REDGPU_API greenStructHeapAllocate      (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC void REDGPU_API greenStructHeapReset         (RedContext context, RedHandleGpu gpu, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC void REDGPU_API greenStructHeapsSet          (RedContext context, RedHandleGpu gpu, unsigned structHeapsSetsCount, const GreenStructHeapSet * structHeapsSets, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC void REDGPU_API greenStructHeapFree          (RedContext context, RedHandleGpu gpu, const GreenStructHeap * structHeap, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 #ifdef __cplusplus
 }

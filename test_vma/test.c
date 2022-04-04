@@ -88,7 +88,7 @@ int main() {
   addStructDeclaration.structDeclarationMembersArrayRO       = 0;
   addStructDeclaration.procedureParametersHandlesDeclaration = 0;
   addStructDeclaration.structDeclaration                     = 0;
-  redCreateStructDeclaration(context, context->gpus[gpuIndex].gpu, "addStructDeclaration", addStructDeclaration.structDeclarationMembersCount, addStructDeclaration.structDeclarationMembers, addStructDeclaration.structDeclarationMembersArrayROCount, addStructDeclaration.structDeclarationMembersArrayRO, addStructDeclaration.procedureParametersHandlesDeclaration, &addStructDeclaration.structDeclaration, 0, __FILE__, __LINE__, 0);
+  greenCreateStructDeclaration(context, context->gpus[gpuIndex].gpu, "addStructDeclaration", &addStructDeclaration, 0, __FILE__, __LINE__, 0);
   GreenStructHeap addStructHeap = {};
   greenStructHeapAllocate(context, context->gpus[gpuIndex].gpu, "addStructHeap", 1, &addStructDeclaration, &addStructHeap, 0, __FILE__, __LINE__, 0);
 
